@@ -8,34 +8,81 @@ namespace Serpent
 {
     class Serpent
     {
-        private int _x;
-        private int _y;
-        private int _xspeed;
-        private int _yspeed;
+        // Position
+        private Position position;
 
-        public Serpent()
+        // Vitesse
+        private Position vitesse;
+
+        // Taille
+        private int total;
+
+        private Position[] tail;
+
+        public Serpent(Position position, Position vitesse)
         {
-            this._x = 0;
-            this._y = 0;
-            this._xspeed = 1;
-            this._yspeed = 0;
+            this.position = position;
+            this.vitesse = vitesse;
+            this.tail = new Position[0];
         }
 
-        public Serpent(int x, int y, int xspeed, int yspeed)
+        public bool Eat(Position position)
         {
-            this._x = x;
-            this._y = y;
-            this._xspeed = xspeed;
-            this._yspeed = yspeed;
+            double distance = this.position.Distance(position);
+
+            if (distance < 1)
+            {
+                ++this.total;
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
-        public void update()
+        public void Dir(Position vitesse)
         {
-            this._x = this._x + this._xspeed * SCALE;
-            this._y = this._y + this._yspeed * SCALE;
-
-            /* TODO: boundries */
-
+            this.vitesse = vitesse;
         }
+
+        public void Death()
+        {
+            for (int i = 0; i < this.tail.Length; ++i)
+            {
+                Position position = this.tail[i];
+                double distance = this.position.Distance(position);
+
+                if (distance < 1)
+                {
+                    this.total = 0;
+                    this.tail = new Position[0];
+                }
+            }
+        }
+
+        public void Update()
+        {
+            for (int i = 0; i < this.tail.Length - 1; ++i)
+            {
+                this.tail[i] = this.tail.[i + 1];
+            }
+
+            if (this.total >= 1)
+            {
+                this.tail[this.total - 1] = new Position(this.position);
+            }
+
+            this.position.X += (this.vitesse.X * SCALE);
+            this.position.Y += (this.vitesse.Y * SCALE);
+        }
+
+        public void Show()
+        {
+            for (int i = 0; i < this.tail.Length; ++i)
+            {
+
+            }
+        }
+
     }
 }
