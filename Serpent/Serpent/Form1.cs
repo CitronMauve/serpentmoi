@@ -118,10 +118,21 @@ namespace Serpent
 				for (int i = 0; i < Players.Length; ++i) {
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
 				}
+
 				// Draw pomme
 				// pomme.Draw(canvas, Parametres.Width, Parametres.Height);
+
 				// Draw touched tiles
 				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
+
+				// Draw grid
+				int numOfCells = (pictureBox.Width * pictureBox.Height) / (Parametres.Width * Parametres.Height);
+				int cellSize = Parametres.Width;
+				Pen pen = new Pen(Color.Black);
+				for (int i = 0; i < numOfCells; ++i) {
+					canvas.DrawLine(pen, 0, i * cellSize, numOfCells * cellSize, i * cellSize);
+					canvas.DrawLine(pen, i * cellSize, 0, i * cellSize, numOfCells * cellSize);
+				}
 			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
 				String endText = "Press Enter to play.\nWASD for Blue Player\nArrow keys for Green Player";
 				label1.Text = endText;
