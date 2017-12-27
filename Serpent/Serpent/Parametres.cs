@@ -13,9 +13,9 @@
 			public static bool GameOver { get; set; }
 
 			public Parametres() {
-				Width = 16;
-				Height = 16;
-				Speed = 16;
+				Width = 10;
+				Height = 10;
+				Speed = 18;
 				GameOver = false;
 			}
 		}

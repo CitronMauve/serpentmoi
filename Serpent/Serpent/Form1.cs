@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,10 +10,14 @@ namespace Serpent
 		private int maxHeight;
 		private Serpent firstPlayer;
 		private Serpent secondPlayer;
+		private List<Serpent> players;
 		private Pomme pomme;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
 		public int MaxHeight { get => maxHeight; set => maxHeight = value; }
+		internal Serpent FirstPlayer { get => firstPlayer; set => firstPlayer = value; }
+		internal Serpent SecondPlayer { get => secondPlayer; set => secondPlayer = value; }
+		internal List<Serpent> Players { get => players; set => players = value; }
 		internal Pomme Pomme { get => pomme; set => pomme = value; }
 
 		public Form1() {
@@ -35,9 +40,14 @@ namespace Serpent
 			
 			new Parametres();
 
-			firstPlayer = new Serpent(this, Brushes.Green);
-			secondPlayer = new Serpent(this, Brushes.Blue);
-			
+			FirstPlayer = new Serpent(this, Brushes.Green, new Position(10, 10));
+			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(40, 40));
+			SecondPlayer.Direction = Direction.Up;
+
+			Players = new List<Serpent>();
+			Players.Add(FirstPlayer);
+			Players.Add(SecondPlayer);
+
 			GeneratePomme();
 		}
 
@@ -55,7 +65,7 @@ namespace Serpent
 					StartGame();
 				}
 			} else {
-				Direction firstPlayerDirection = firstPlayer.Direction;
+				Direction firstPlayerDirection = FirstPlayer.Direction;
 				if (Input.KeyPressed(Keys.Right) && firstPlayerDirection != Direction.Left) {
 					firstPlayerDirection = Direction.Right;
 				} else if (Input.KeyPressed(Keys.Left) && firstPlayerDirection != Direction.Right) {
@@ -65,8 +75,19 @@ namespace Serpent
 				} else if (Input.KeyPressed(Keys.Down) && firstPlayerDirection != Direction.Up) {
 					firstPlayerDirection = Direction.Down;
 				}
+				FirstPlayer.Move(firstPlayerDirection);
 
-				firstPlayer.Move(firstPlayerDirection);
+				Direction secondPlayerDirection = SecondPlayer.Direction;
+				if (Input.KeyPressed(Keys.D) && secondPlayerDirection != Direction.Left) {
+					secondPlayerDirection = Direction.Right;
+				} else if (Input.KeyPressed(Keys.A) && secondPlayerDirection != Direction.Right) {
+					secondPlayerDirection = Direction.Left;
+				} else if (Input.KeyPressed(Keys.W) && secondPlayerDirection != Direction.Down) {
+					secondPlayerDirection = Direction.Up;
+				} else if (Input.KeyPressed(Keys.S) && secondPlayerDirection != Direction.Up) {
+					secondPlayerDirection = Direction.Down;
+				}
+				SecondPlayer.Move(secondPlayerDirection);
 			}
 
 			pictureBox.Invalidate();
@@ -77,7 +98,10 @@ namespace Serpent
 
 			if (!Parametres.GameOver) {
 				// Draw first player
-				firstPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
+				FirstPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
+
+				// Draw second player
+				SecondPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
 
 				// Draw Pomme
 				pomme.Draw(canvas, Parametres.Width, Parametres.Height);

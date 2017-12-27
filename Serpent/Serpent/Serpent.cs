@@ -20,6 +20,14 @@ namespace Serpent {
 			Color = color;
 		}
 
+		public Serpent(Form1 form, Brush color, Position position) {
+			this.form = form;
+			Position head = position;
+			Body.Add(head);
+			Direction = Direction.Down;
+			Color = color;
+		}
+
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
 			for (int i = 0; i < Body.Count; i++) {
 				canvas.FillEllipse(Color,
@@ -30,11 +38,11 @@ namespace Serpent {
 		}
 
 		private void Eat() {
-			Position circle = new Position {
+			Position bodyPart = new Position {
 				X = Body[Body.Count - 1].X,
 				Y = Body[Body.Count - 1].Y
 			};
-			Body.Add(circle);
+			Body.Add(bodyPart);
 		}
 
 		public void Move(Direction direction) {
@@ -68,6 +76,18 @@ namespace Serpent {
 							form.Die();
 						}
 					}
+					// Serpents collision
+					/*
+					foreach (Serpent serpent in form.Players) {
+						for (int j = 0; j < serpent.Body.Count; j++) {
+							if (Body[i].X == serpent.Body[j].X &&
+							   Body[i].Y == serpent.Body[j].Y) {
+								form.Die();
+							}
+						}
+					}
+					*/
+
 					// Pomme collision
 					if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
 						Eat();
