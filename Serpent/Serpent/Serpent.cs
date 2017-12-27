@@ -4,78 +4,78 @@ using System.Drawing;
 namespace Serpent {
 	class Serpent {
 		private Form1 form;
-		private List<Circle> Body = new List<Circle>();
+		private List<Position> body = new List<Position>();
 		private Direction direction;
 		private Brush color;
 
 		public Direction Direction { get => direction; set => direction = value; }
-		public List<Circle> Body1 { get => Body; set => Body = value; }
-
+		public List<Position> Body { get => body; set => body = value; }
+		public Brush Color { get => color; set => color = value; }
 
 		public Serpent(Form1 form, Brush color) {
 			this.form = form;
-			Circle head = new Circle { X = 10, Y = 5 };
-			Body1.Add(head);
+			Position head = new Position(10, 5);
+			Body.Add(head);
 			Direction = Direction.Down;
-			this.color = color;
+			Color = color;
 		}
 
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
-			for (int i = 0; i < Body1.Count; i++) {
-				canvas.FillEllipse(color,
-					new Rectangle(Body1[i].X * scaleWidth,
-									Body1[i].Y * scaleHeight,
+			for (int i = 0; i < Body.Count; i++) {
+				canvas.FillEllipse(Color,
+					new Rectangle(Body[i].X * scaleWidth,
+									Body[i].Y * scaleHeight,
 									scaleWidth, scaleHeight));
 			}
 		}
 
 		private void Eat() {
-			Circle circle = new Circle {
-				X = Body1[Body1.Count - 1].X,
-				Y = Body1[Body1.Count - 1].Y
+			Position circle = new Position {
+				X = Body[Body.Count - 1].X,
+				Y = Body[Body.Count - 1].Y
 			};
-			Body1.Add(circle);
+			Body.Add(circle);
 		}
 
 		public void Move(Direction direction) {
-			for (int i = Body1.Count - 1; i >= 0; i--) {
+			for (int i = Body.Count - 1; i >= 0; i--) {
 				if (i == 0) {
 					switch (direction) {
 						case Direction.Right:
-							Body1[i].X++;
+							Body[i].X++;
 							break;
 						case Direction.Left:
-							Body1[i].X--;
+							Body[i].X--;
 							break;
 						case Direction.Up:
-							Body1[i].Y--;
+							Body[i].Y--;
 							break;
 						case Direction.Down:
-							Body1[i].Y++;
+							Body[i].Y++;
 							break;
 					}
 					Direction = direction;
 
 					// Border collision
-					if (Body1[i].X < 0 || Body1[i].Y < 0 || 
-						Body1[i].X >= form.MaxWidth || Body1[i].Y >= form.MaxHeight) {
+					if (Body[i].X < 0 || Body[i].Y < 0 || 
+						Body[i].X >= form.MaxWidth || Body[i].Y >= form.MaxHeight) {
 						form.Die();
 					}
 					// Own body collision
-					for (int j = 1; j < Body1.Count; j++) {
-						if (Body1[i].X == Body1[j].X &&
-						   Body1[i].Y == Body1[j].Y) {
+					for (int j = 1; j < Body.Count; j++) {
+						if (Body[i].X == Body[j].X &&
+						   Body[i].Y == Body[j].Y) {
 							form.Die();
 						}
 					}
-					// Food collision
-					if (Body1[0].X == form.Food.X && Body1[0].Y == form.Food.Y) {
+					// Pomme collision
+					if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
 						Eat();
-						form.GenerateFood();
+						form.GeneratePomme();
 					}
 				} else {
-					Body1[i].X = Body1[i - 1].X;
-					Body1[i].Y = Body1[i - 1].Y;
+					Body[i].X = Body[i - 1].X;
+					Body[i].Y = Body[i - 1].Y;
 				}
 			}
 		}

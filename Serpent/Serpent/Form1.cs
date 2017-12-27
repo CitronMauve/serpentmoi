@@ -9,11 +9,11 @@ namespace Serpent
 		private int maxHeight;
 		private Serpent firstPlayer;
 		private Serpent secondPlayer;
-		private Circle food = new Circle();
+		private Pomme pomme;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
 		public int MaxHeight { get => maxHeight; set => maxHeight = value; }
-		public Circle Food { get => food; set => food = value; }
+		internal Pomme Pomme { get => pomme; set => pomme = value; }
 
 		public Form1() {
 			InitializeComponent();
@@ -23,11 +23,11 @@ namespace Serpent
 			timer.Interval = 1000 / Parametres.Speed;
 			timer.Tick += UpdateScreen;
 			timer.Start();
-			
-			StartGame();
 
 			MaxWidth = pictureBox.Size.Width / Parametres.Width;
 			MaxHeight = pictureBox.Size.Height / Parametres.Height;
+
+			StartGame();
 		}
 
 		private void StartGame() {
@@ -38,12 +38,14 @@ namespace Serpent
 			firstPlayer = new Serpent(this, Brushes.Green);
 			secondPlayer = new Serpent(this, Brushes.Blue);
 			
-			GenerateFood();
+			GeneratePomme();
 		}
-		
-		public void GenerateFood() {
+
+		public void GeneratePomme() {
 			Random random = new Random();
-			Food = new Circle { X = random.Next(0, MaxWidth), Y = random.Next(0, MaxHeight) };
+			int randomX = random.Next(0, MaxWidth);
+			int randomY = random.Next(0, MaxHeight);
+			Pomme = new Pomme(randomX, randomY);
 		}
 
 
@@ -74,10 +76,11 @@ namespace Serpent
 			Graphics canvas = e.Graphics;
 
 			if (!Parametres.GameOver) {
+				// Draw first player
 				firstPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
 
-				//Draw Food
-				canvas.FillEllipse(Brushes.Red, new Rectangle(Food.X * Parametres.Width, Food.Y * Parametres.Height, Parametres.Width, Parametres.Height));
+				// Draw Pomme
+				canvas.FillEllipse(Brushes.Red, new Rectangle(Pomme.X * Parametres.Width, Pomme.Y * Parametres.Height, Parametres.Width, Parametres.Height));
 			} else {
 				/*
 				lblGameOver.Text = gameOver;
