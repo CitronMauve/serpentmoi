@@ -80,7 +80,7 @@ namespace Serpent
 				firstPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
 
 				// Draw Pomme
-				canvas.FillEllipse(Brushes.Red, new Rectangle(Pomme.X * Parametres.Width, Pomme.Y * Parametres.Height, Parametres.Width, Parametres.Height));
+				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
 			} else {
 				/*
 				lblGameOver.Text = gameOver;

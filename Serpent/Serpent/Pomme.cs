@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Serpent {
 	class Pomme {
-		public int X { get; set; }
-		public int Y { get; set; }
+		private Brush color = Brushes.Red;
+		private int x;
+		private int y;
+
+		public Brush Color { get => color; set => color = value; }
+		public int X { get => x; set => x = value; }
+		public int Y { get => y; set => y = value; }
 
 		public Pomme() {
 			X = 0;
@@ -17,6 +18,10 @@ namespace Serpent {
 		public Pomme(int X, int Y) {
 			this.X = X;
 			this.Y = Y;
+		}
+
+		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
+			canvas.FillEllipse(Color, new Rectangle(X * Parametres.Width, Y * Parametres.Height, Parametres.Width, Parametres.Height));
 		}
 	}
 }
