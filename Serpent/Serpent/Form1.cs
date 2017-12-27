@@ -64,9 +64,10 @@ namespace Serpent
 
 
 		private void UpdateScreen(object sender, EventArgs e) {
-			if (Parametres.GameOver) {
+			if (!Parametres.GameStarted || Parametres.GameOver) {
 				if (Input.KeyPressed(Keys.Enter)) {
 					StartGame();
+					Parametres.GameStarted = true;
 				}
 			} else {
 				Direction firstPlayerDirection = FirstPlayer.Direction;
@@ -100,14 +101,18 @@ namespace Serpent
 		private void pbCanvas_Paint(object sender, PaintEventArgs e) {
 			Graphics canvas = e.Graphics;
 
-			if (!Parametres.GameOver) {
+			if (Parametres.GameStarted && !Parametres.GameOver) {
 				// Draw players
 				for (int i = 0; i < Players.Length; ++i) {
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
 				}
 				// Draw Pomme
 				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
-			} else {
+			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
+				String endText = "Press Enter to play.";
+				label1.Text = endText;
+				label1.Visible = true;
+			} else if (!Parametres.GameStarted && Parametres.GameOver) {
 				String endText = winner + " player wins.\nPress Enter to play again.";
 				label1.Text = endText;
 				label1.Visible = true;
@@ -128,6 +133,7 @@ namespace Serpent
 			} else if (!Players[0].Alive && Players[1].Alive) {
 				winner = "Blue";
 			}
+			Parametres.GameStarted = false;
 			Parametres.GameOver = true;
 		}
 	}
