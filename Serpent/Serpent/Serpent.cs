@@ -8,11 +8,13 @@ namespace Serpent {
 		private Direction direction;
 		private Brush color;
 		private int index;
+		private bool alive;
 
 		public Direction Direction { get => direction; set => direction = value; }
 		public List<Position> Body { get => body; set => body = value; }
 		public Brush Color { get => color; set => color = value; }
 		public int Index { get => index; set => index = value; }
+		public bool Alive { get => alive; set => alive = value; }
 
 		public Serpent(Form1 form, Brush color) {
 			this.form = form;
@@ -20,6 +22,7 @@ namespace Serpent {
 			Body.Add(head);
 			Direction = Direction.Down;
 			Color = color;
+			Alive = true;
 		}
 
 		public Serpent(Form1 form, Brush color, Position position) {
@@ -28,6 +31,7 @@ namespace Serpent {
 			Body.Add(head);
 			Direction = Direction.Down;
 			Color = color;
+			Alive = true;
 		}
 
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
@@ -69,58 +73,38 @@ namespace Serpent {
 					// Border collision
 					if (Body[i].X < 0 || Body[i].Y < 0 || 
 						Body[i].X >= form.MaxWidth || Body[i].Y >= form.MaxHeight) {
+						Alive = false;
 						form.Die();
 					}
 					// Own body collision
 					for (int j = 1; j < Body.Count; ++j) {
 						if (Body[i].X == Body[j].X &&
 						   Body[i].Y == Body[j].Y) {
+							Alive = false;
 							form.Die();
 						}
 					}
 					// Serpents collision
-					/*
-					foreach (Serpent serpent in form.Players) {
-						for (int j = 0; j < serpent.Body.Count; ++j) {
-							if (Body[i].X == serpent.Body[j].X &&
-							   Body[i].Y == serpent.Body[j].Y) {
-								form.Die();
-							}
-						}
-					}
-					*/
 					if (Index == 0) {
 						Serpent secondPlayer = form.Players[1];
 						for (int j = 0; j < secondPlayer.Body.Count; ++j) {
 							if (Body[i].X == secondPlayer.Body[j].X &&
 							   Body[i].Y == secondPlayer.Body[j].Y) {
+								Alive = false;
 								form.Die();
 							}
 						}
 					}
-
 					if (Index == 1) {
 						Serpent firstPlayer = form.Players[0];
 						for (int j = 0; j < firstPlayer.Body.Count; ++j) {
 							if (Body[i].X == firstPlayer.Body[j].X &&
 							   Body[i].Y == firstPlayer.Body[j].Y) {
+							Alive = false;
 								form.Die();
 							}
 						}
 					}
-					/*
-					for (int j = 0; j < form.Players.Length; ++j) {
-						if (Index != j) {
-							for (int k = 0; j < form.Players[j].Body.Count; ++k) {
-								if (Body[i].X == form.Players[j].Body[k].X &&
-								   Body[i].Y == form.Players[j].Body[k].Y) {
-									form.Die();
-								}
-							}
-						}
-					}
-					*/
-
 					// Pomme collision
 					if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
 						Eat();

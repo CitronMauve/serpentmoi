@@ -11,6 +11,7 @@ namespace Serpent
 		private Serpent secondPlayer;
 		private Serpent[] players;
 		private Pomme pomme;
+		private String winner;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
 		public int MaxHeight { get => maxHeight; set => maxHeight = value; }
@@ -35,7 +36,7 @@ namespace Serpent
 		}
 
 		private void StartGame() {
-			// lblGameOver.Visible = false;
+			label1.Visible = false;
 			
 			new Parametres();
 
@@ -48,6 +49,8 @@ namespace Serpent
 			Players = new Serpent[2];
 			Players[0] = FirstPlayer;
 			Players[1] = SecondPlayer;
+
+			winner = "";
 
 			GeneratePomme();
 		}
@@ -102,14 +105,12 @@ namespace Serpent
 				for (int i = 0; i < Players.Length; ++i) {
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
 				}
-
 				// Draw Pomme
 				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
 			} else {
-				/*
-				lblGameOver.Text = gameOver;
-				lblGameOver.Visible = true;
-				*/
+				String endText = winner + " player wins.\nPress Enter to play again.";
+				label1.Text = endText;
+				label1.Visible = true;
 			}
 		}
 
@@ -122,6 +123,11 @@ namespace Serpent
 		}
 
 		public void Die() {
+			if (Players[0].Alive && !Players[1].Alive) {
+				winner = "Green";
+			} else if (!Players[0].Alive && Players[1].Alive) {
+				winner = "Blue";
+			}
 			Parametres.GameOver = true;
 		}
 	}
