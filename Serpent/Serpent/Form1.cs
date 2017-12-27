@@ -11,6 +11,7 @@ namespace Serpent
 		private Serpent secondPlayer;
 		private Serpent[] players;
 		private Pomme pomme;
+		private TouchedTiles touchedTiles;
 		private String winner;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
@@ -19,6 +20,7 @@ namespace Serpent
 		internal Serpent SecondPlayer { get => secondPlayer; set => secondPlayer = value; }
 		internal Serpent[] Players { get => players; set => players = value; }
 		internal Pomme Pomme { get => pomme; set => pomme = value; }
+		internal TouchedTiles TouchedTiles { get => touchedTiles; set => touchedTiles = value; }
 
 		public Form1() {
 			InitializeComponent();
@@ -26,7 +28,7 @@ namespace Serpent
 			new Parametres();
 			
 			timer.Interval = 1000 / Parametres.Speed;
-			timer.Tick += UpdateScreen;
+			timer.Tick += Update;
 			timer.Start();
 
 			MaxWidth = pictureBox.Size.Width / Parametres.Width;
@@ -40,15 +42,17 @@ namespace Serpent
 			
 			new Parametres();
 
-			FirstPlayer = new Serpent(this, Brushes.Green, new Position(10, 10));
+			FirstPlayer = new Serpent(this, Brushes.Green, new Position(40, 40));
 			FirstPlayer.Index = 0;
-			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(40, 40));
+			FirstPlayer.Direction = Direction.Up;
+			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(10, 10));
 			SecondPlayer.Index = 1;
-			SecondPlayer.Direction = Direction.Up;
 
 			Players = new Serpent[2];
 			Players[0] = FirstPlayer;
 			Players[1] = SecondPlayer;
+
+			TouchedTiles = new TouchedTiles();
 
 			winner = "";
 
@@ -63,13 +67,14 @@ namespace Serpent
 		}
 
 
-		private void UpdateScreen(object sender, EventArgs e) {
+		private void Update(object sender, EventArgs e) {
 			if (!Parametres.GameStarted || Parametres.GameOver) {
 				if (Input.KeyPressed(Keys.Enter)) {
 					StartGame();
 					Parametres.GameStarted = true;
 				}
 			} else {
+				// Update first player
 				Direction firstPlayerDirection = FirstPlayer.Direction;
 				if (Input.KeyPressed(Keys.Right) && firstPlayerDirection != Direction.Left) {
 					firstPlayerDirection = Direction.Right;
@@ -82,6 +87,7 @@ namespace Serpent
 				}
 				FirstPlayer.Move(firstPlayerDirection);
 
+				// Update second player
 				Direction secondPlayerDirection = SecondPlayer.Direction;
 				if (Input.KeyPressed(Keys.D) && secondPlayerDirection != Direction.Left) {
 					secondPlayerDirection = Direction.Right;
@@ -93,12 +99,16 @@ namespace Serpent
 					secondPlayerDirection = Direction.Down;
 				}
 				SecondPlayer.Move(secondPlayerDirection);
+
+				// Update touched tiles
+				TouchedTiles.Add(FirstPlayer.Body[0], FirstPlayer.Color);
+				TouchedTiles.Add(SecondPlayer.Body[0], SecondPlayer.Color);
 			}
 
 			pictureBox.Invalidate();
 		}
 
-		private void pbCanvas_Paint(object sender, PaintEventArgs e) {
+		private void Draw(object sender, PaintEventArgs e) {
 			Graphics canvas = e.Graphics;
 
 			if (Parametres.GameStarted && !Parametres.GameOver) {
@@ -106,10 +116,12 @@ namespace Serpent
 				for (int i = 0; i < Players.Length; ++i) {
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
 				}
-				// Draw Pomme
+				// Draw pomme
 				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
+				// Draw touched tiles
+				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
 			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
-				String endText = "Press Enter to play.";
+				String endText = "Press Enter to play.\nWASD for Blue Player\nArrow keys for Green Player";
 				label1.Text = endText;
 				label1.Visible = true;
 			} else if (!Parametres.GameStarted && Parametres.GameOver) {

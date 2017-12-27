@@ -44,7 +44,7 @@
 			this.pictureBox.Size = new System.Drawing.Size(500, 500);
 			this.pictureBox.TabIndex = 0;
 			this.pictureBox.TabStop = false;
-			this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCanvas_Paint);
+			this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
 			// 
 			// label1
 			// 

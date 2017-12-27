@@ -37,9 +37,7 @@ namespace Serpent {
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
 			for (int i = 0; i < Body.Count; i++) {
 				canvas.FillEllipse(Color,
-					new Rectangle(Body[i].X * scaleWidth,
-									Body[i].Y * scaleHeight,
-									scaleWidth, scaleHeight));
+					new Rectangle(Body[i].X * scaleWidth, Body[i].Y * scaleHeight, scaleWidth, scaleHeight));
 			}
 		}
 
@@ -95,12 +93,19 @@ namespace Serpent {
 							}
 						}
 					}
+					// Tiles collision
+					Position position = new Position(Body[i].X, Body[i].Y);
+					if (form.TouchedTiles.Tiles.ContainsKey(position)) {
+						Alive = false;
+						form.Die();
+					}
+
 					if (Index == 1) {
 						Serpent firstPlayer = form.Players[0];
 						for (int j = 0; j < firstPlayer.Body.Count; ++j) {
 							if (Body[i].X == firstPlayer.Body[j].X &&
 							   Body[i].Y == firstPlayer.Body[j].Y) {
-							Alive = false;
+								Alive = false;
 								form.Die();
 							}
 						}

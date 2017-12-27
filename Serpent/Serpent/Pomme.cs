@@ -21,7 +21,8 @@ namespace Serpent {
 		}
 
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
-			canvas.FillEllipse(Color, new Rectangle(X * Parametres.Width, Y * Parametres.Height, Parametres.Width, Parametres.Height));
+			canvas.FillEllipse(Color, 
+				new Rectangle(X * Parametres.Width, Y * Parametres.Height, Parametres.Width, Parametres.Height));
 		}
 	}
 }
