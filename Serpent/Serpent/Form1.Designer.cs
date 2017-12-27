@@ -41,7 +41,7 @@
 			this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pictureBox.Location = new System.Drawing.Point(13, 13);
 			this.pictureBox.Name = "pictureBox";
-			this.pictureBox.Size = new System.Drawing.Size(1200, 800);
+			this.pictureBox.Size = new System.Drawing.Size(1400, 800);
 			this.pictureBox.TabIndex = 0;
 			this.pictureBox.TabStop = false;
 			this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
@@ -50,7 +50,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(455, 352);
+			this.label1.Location = new System.Drawing.Point(555, 352);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(100, 37);
 			this.label1.TabIndex = 1;
@@ -61,7 +61,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1227, 826);
+			this.ClientSize = new System.Drawing.Size(1428, 826);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.pictureBox);
 			this.Name = "Form1";

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Serpent
 {
-    public partial class Form1 : Form {
+	public partial class Form1 : Form {
 		private int maxWidth;
 		private int maxHeight;
 		private Serpent firstPlayer;
@@ -24,9 +24,9 @@ namespace Serpent
 
 		public Form1() {
 			InitializeComponent();
-			
+
 			new Parametres();
-			
+
 			timer.Interval = 1000 / Parametres.Speed;
 			timer.Tick += Update;
 			timer.Start();
@@ -39,13 +39,13 @@ namespace Serpent
 
 		private void StartGame() {
 			label1.Visible = false;
-			
+
 			new Parametres();
 
-			FirstPlayer = new Serpent(this, Brushes.Green, new Position(40, 40));
+			FirstPlayer = new Serpent(this, Brushes.Green, new Position(maxWidth - (2 * Parametres.Width), maxHeight - (2 * Parametres.Height)));
 			FirstPlayer.Index = 0;
 			FirstPlayer.Direction = Direction.Up;
-			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(10, 10));
+			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(2 * Parametres.Width, 2 * Parametres.Height));
 			SecondPlayer.Index = 1;
 
 			Players = new Serpent[2];
@@ -70,12 +70,21 @@ namespace Serpent
 
 
 		private void Update(object sender, EventArgs e) {
-			if (!Parametres.GameStarted || Parametres.GameOver) {
+			if (!Parametres.GameStarted || Parametres.GamePaused || Parametres.GameOver) {
 				if (Input.KeyPressed(Keys.Enter)) {
 					StartGame();
 					Parametres.GameStarted = true;
 				}
-			} else {
+				if (Input.KeyPressed(Keys.Space)) {
+					Parametres.GamePaused = false;
+				}
+			} else if (Parametres.GameStarted && !Parametres.GamePaused && !Parametres.GameOver) {
+				
+				if (Input.KeyPressed(Keys.Space)) {
+					Parametres.GamePaused = true;
+				}
+
+
 				// Update first player
 				Direction firstPlayerDirection = FirstPlayer.Direction;
 				if (Input.KeyPressed(Keys.Right) && firstPlayerDirection != Direction.Left) {
@@ -113,7 +122,9 @@ namespace Serpent
 		private void Draw(object sender, PaintEventArgs e) {
 			Graphics canvas = e.Graphics;
 
-			if (Parametres.GameStarted && !Parametres.GameOver) {
+			if (Parametres.GameStarted && !Parametres.GamePaused && !Parametres.GameOver) {
+				label1.Visible = false;
+
 				// Draw players
 				for (int i = 0; i < Players.Length; ++i) {
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
@@ -139,6 +150,10 @@ namespace Serpent
 				label1.Visible = true;
 			} else if (!Parametres.GameStarted && Parametres.GameOver) {
 				String endText = winner + " player wins.\nPress Enter to play again.";
+				label1.Text = endText;
+				label1.Visible = true;
+			} else if (Parametres.GameStarted && Parametres.GamePaused && !Parametres.GameOver) {
+				String endText = "Press the Spacebar key to unpause the game.";
 				label1.Text = endText;
 				label1.Visible = true;
 			}
