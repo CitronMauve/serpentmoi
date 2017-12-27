@@ -93,13 +93,6 @@ namespace Serpent {
 							}
 						}
 					}
-					// Tiles collision
-					Position position = new Position(Body[i].X, Body[i].Y);
-					if (form.TouchedTiles.Tiles.ContainsKey(position)) {
-						Alive = false;
-						form.Die();
-					}
-
 					if (Index == 1) {
 						Serpent firstPlayer = form.Players[0];
 						for (int j = 0; j < firstPlayer.Body.Count; ++j) {
@@ -110,11 +103,19 @@ namespace Serpent {
 							}
 						}
 					}
+					// Tiles collision
+					Position position = new Position(Body[i].X, Body[i].Y);
+					if (form.TouchedTiles.Tiles.ContainsKey(position)) {
+						Alive = false;
+						form.Die();
+					}
 					// Pomme collision
+					/*
 					if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
 						Eat();
 						form.GeneratePomme();
 					}
+					*/
 				} else {
 					Body[i].X = Body[i - 1].X;
 					Body[i].Y = Body[i - 1].Y;

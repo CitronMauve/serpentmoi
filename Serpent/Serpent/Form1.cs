@@ -10,7 +10,7 @@ namespace Serpent
 		private Serpent firstPlayer;
 		private Serpent secondPlayer;
 		private Serpent[] players;
-		private Pomme pomme;
+		// private Pomme pomme;
 		private TouchedTiles touchedTiles;
 		private String winner;
 
@@ -19,7 +19,7 @@ namespace Serpent
 		internal Serpent FirstPlayer { get => firstPlayer; set => firstPlayer = value; }
 		internal Serpent SecondPlayer { get => secondPlayer; set => secondPlayer = value; }
 		internal Serpent[] Players { get => players; set => players = value; }
-		internal Pomme Pomme { get => pomme; set => pomme = value; }
+		// internal Pomme Pomme { get => pomme; set => pomme = value; }
 		internal TouchedTiles TouchedTiles { get => touchedTiles; set => touchedTiles = value; }
 
 		public Form1() {
@@ -56,15 +56,17 @@ namespace Serpent
 
 			winner = "";
 
-			GeneratePomme();
+			// GeneratePomme();
 		}
 
+		/*
 		public void GeneratePomme() {
 			Random random = new Random();
 			int randomX = random.Next(0, MaxWidth);
 			int randomY = random.Next(0, MaxHeight);
-			Pomme = new Pomme(randomX, randomY);
+			// Pomme = new Pomme(randomX, randomY);
 		}
+		*/
 
 
 		private void Update(object sender, EventArgs e) {
@@ -117,7 +119,7 @@ namespace Serpent
 					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
 				}
 				// Draw pomme
-				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
+				// pomme.Draw(canvas, Parametres.Width, Parametres.Height);
 				// Draw touched tiles
 				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
 			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
