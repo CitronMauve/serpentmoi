@@ -7,10 +7,12 @@ namespace Serpent {
 		private List<Position> body = new List<Position>();
 		private Direction direction;
 		private Brush color;
+		private int index;
 
 		public Direction Direction { get => direction; set => direction = value; }
 		public List<Position> Body { get => body; set => body = value; }
 		public Brush Color { get => color; set => color = value; }
+		public int Index { get => index; set => index = value; }
 
 		public Serpent(Form1 form, Brush color) {
 			this.form = form;
@@ -70,7 +72,7 @@ namespace Serpent {
 						form.Die();
 					}
 					// Own body collision
-					for (int j = 1; j < Body.Count; j++) {
+					for (int j = 1; j < Body.Count; ++j) {
 						if (Body[i].X == Body[j].X &&
 						   Body[i].Y == Body[j].Y) {
 							form.Die();
@@ -79,10 +81,41 @@ namespace Serpent {
 					// Serpents collision
 					/*
 					foreach (Serpent serpent in form.Players) {
-						for (int j = 0; j < serpent.Body.Count; j++) {
+						for (int j = 0; j < serpent.Body.Count; ++j) {
 							if (Body[i].X == serpent.Body[j].X &&
 							   Body[i].Y == serpent.Body[j].Y) {
 								form.Die();
+							}
+						}
+					}
+					*/
+					if (Index == 0) {
+						Serpent secondPlayer = form.Players[1];
+						for (int j = 0; j < secondPlayer.Body.Count; ++j) {
+							if (Body[i].X == secondPlayer.Body[j].X &&
+							   Body[i].Y == secondPlayer.Body[j].Y) {
+								form.Die();
+							}
+						}
+					}
+
+					if (Index == 1) {
+						Serpent firstPlayer = form.Players[0];
+						for (int j = 0; j < firstPlayer.Body.Count; ++j) {
+							if (Body[i].X == firstPlayer.Body[j].X &&
+							   Body[i].Y == firstPlayer.Body[j].Y) {
+								form.Die();
+							}
+						}
+					}
+					/*
+					for (int j = 0; j < form.Players.Length; ++j) {
+						if (Index != j) {
+							for (int k = 0; j < form.Players[j].Body.Count; ++k) {
+								if (Body[i].X == form.Players[j].Body[k].X &&
+								   Body[i].Y == form.Players[j].Body[k].Y) {
+									form.Die();
+								}
 							}
 						}
 					}

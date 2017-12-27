@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -10,14 +9,14 @@ namespace Serpent
 		private int maxHeight;
 		private Serpent firstPlayer;
 		private Serpent secondPlayer;
-		private List<Serpent> players;
+		private Serpent[] players;
 		private Pomme pomme;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
 		public int MaxHeight { get => maxHeight; set => maxHeight = value; }
 		internal Serpent FirstPlayer { get => firstPlayer; set => firstPlayer = value; }
 		internal Serpent SecondPlayer { get => secondPlayer; set => secondPlayer = value; }
-		internal List<Serpent> Players { get => players; set => players = value; }
+		internal Serpent[] Players { get => players; set => players = value; }
 		internal Pomme Pomme { get => pomme; set => pomme = value; }
 
 		public Form1() {
@@ -41,12 +40,14 @@ namespace Serpent
 			new Parametres();
 
 			FirstPlayer = new Serpent(this, Brushes.Green, new Position(10, 10));
+			FirstPlayer.Index = 0;
 			SecondPlayer = new Serpent(this, Brushes.Blue, new Position(40, 40));
+			SecondPlayer.Index = 1;
 			SecondPlayer.Direction = Direction.Up;
 
-			Players = new List<Serpent>();
-			Players.Add(FirstPlayer);
-			Players.Add(SecondPlayer);
+			Players = new Serpent[2];
+			Players[0] = FirstPlayer;
+			Players[1] = SecondPlayer;
 
 			GeneratePomme();
 		}
@@ -97,11 +98,10 @@ namespace Serpent
 			Graphics canvas = e.Graphics;
 
 			if (!Parametres.GameOver) {
-				// Draw first player
-				FirstPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
-
-				// Draw second player
-				SecondPlayer.Draw(canvas, Parametres.Width, Parametres.Height);
+				// Draw players
+				for (int i = 0; i < Players.Length; ++i) {
+					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
+				}
 
 				// Draw Pomme
 				pomme.Draw(canvas, Parametres.Width, Parametres.Height);
