@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace Serpent {
@@ -10,6 +10,7 @@ namespace Serpent {
 		private Brush color;
 		private int index;
 		private bool alive;
+		private HashSet<Bonus> activeBonus;
 
 		internal Position Head { get => head; set => head = value; }
 		public Direction Direction { get => direction; set => direction = value; }
@@ -25,6 +26,7 @@ namespace Serpent {
 			Direction = Direction.Down;
 			Color = color;
 			Alive = true;
+			activeBonus = new HashSet<Bonus>();
 		}
 
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
@@ -43,47 +45,106 @@ namespace Serpent {
 		*/
 
 		public void Move(Direction direction) {
-			switch (direction) {
-				case Direction.Right:
-					Head.X++;
-					break;
-				case Direction.Left:
-					Head.X--;
-					break;
-				case Direction.Up:
-					Head.Y--;
-					break;
-				case Direction.Down:
-					Head.Y++;
-					break;
+			bool inversePresent = false;
+			bool invincibilityPresent = false;
+			foreach (Bonus bonus in activeBonus) {
+				if (bonus is Inverse) {
+					inversePresent = true;
+				} else if (bonus is Invincibility) {
+					invincibilityPresent = true;
+				}
+			}
+			if (inversePresent) {
+				switch (direction) {
+					case Direction.Right:
+						Head.X--;
+						break;
+					case Direction.Left:
+						Head.X++;
+						break;
+					case Direction.Up:
+						Head.Y++;
+						break;
+					case Direction.Down:
+						Head.Y--;
+						break;
+				}
+			} else {
+				switch (direction) {
+					case Direction.Right:
+						Head.X++;
+						break;
+					case Direction.Left:
+						Head.X--;
+						break;
+					case Direction.Up:
+						Head.Y--;
+						break;
+					case Direction.Down:
+						Head.Y++;
+						break;
+				}
 			}
 			Direction = direction;
 
-			Collisions();
+			Collisions(invincibilityPresent);
 		}
 
-		private void Collisions() {
-			BorderCollision();
-			SerpentCollision();
-			TileCollision();
-			BonusCollision();
-			// Pomme collision
-			/*
-			if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
-				Eat();
-				form.GeneratePomme();
+		private void Collisions(bool invincibility) {
+			if (invincibility) {
+				BonusCollision();
+			} else {
+				BorderCollision();
+				SerpentCollision();
+				TileCollision();
+				BonusCollision();
 			}
-			*/
 		}
 		
 		private void BonusCollision() {
 			if (form.Bonuss.Count != 0) {
 				for (int i = 0; i < form.Bonuss.Count; ++i) {
 					if (Head.X == form.Bonuss[i].X && Head.Y == form.Bonuss[i].Y) {
+						if (form.Bonuss[i].ForEnemy) {
+							if (Index == 0) {
+								form.Players[1].AddBonus(form.Bonuss[i]);
+							} else if (Index == 1) {
+								form.Players[0].AddBonus(form.Bonuss[i]);
+							}
+						} else {
+							AddBonus(form.Bonuss[i]);
+						}
 						form.Bonuss.RemoveAt(i);
 						break;
 					}
 				}
+			}
+		}
+
+		private void AddBonus(Bonus bonus) {
+			bool present = false;
+
+			foreach (Bonus b in activeBonus) {
+				if (b.GetType() == bonus.GetType()) {
+					b.RemainingDuration = b.MaxDuration;
+					present = true;
+				}
+			}
+
+			if (!present) {
+				activeBonus.Add(bonus);
+			}
+		}
+
+		public void RemoveBonus() {
+			List<Bonus> bonusToRemove = new List<Bonus>();
+			foreach (Bonus bonus in activeBonus) {
+				if (bonus.RemainingDuration <= 0) {
+					bonusToRemove.Add(bonus);
+				}
+			}
+			foreach (Bonus bonus in bonusToRemove) {
+				activeBonus.Remove(bonus);
 			}
 		}
 
