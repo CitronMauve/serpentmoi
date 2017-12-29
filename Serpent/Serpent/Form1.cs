@@ -112,8 +112,8 @@ namespace Serpent
 				SecondPlayer.Move(secondPlayerDirection);
 
 				// Update touched tiles
-				TouchedTiles.Add(FirstPlayer.Body[0], FirstPlayer.Color);
-				TouchedTiles.Add(SecondPlayer.Body[0], SecondPlayer.Color);
+				TouchedTiles.Add(FirstPlayer.Head, FirstPlayer.Color);
+				TouchedTiles.Add(SecondPlayer.Head, SecondPlayer.Color);
 			}
 
 			pictureBox.Invalidate();
