@@ -1,15 +1,7 @@
 ﻿using System.Drawing;
 
 namespace Serpent {
-	class Pomme {
-		private Brush color = Brushes.Red;
-		private int x;
-		private int y;
-
-		public Brush Color { get => color; set => color = value; }
-		public int X { get => x; set => x = value; }
-		public int Y { get => y; set => y = value; }
-
+	class Pomme : Bonus {
 		public Pomme() {
 			X = 0;
 			Y = 0;
@@ -20,7 +12,7 @@ namespace Serpent {
 			this.Y = Y;
 		}
 
-		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
+		public override void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
 			canvas.FillEllipse(Color, 
 				new Rectangle(X * Parametres.Width, Y * Parametres.Height, Parametres.Width, Parametres.Height));
 		}

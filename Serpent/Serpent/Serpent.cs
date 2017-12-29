@@ -67,13 +67,31 @@ namespace Serpent {
 			}
 			Direction = direction;
 
-			// Border collision
-			if (Head.X < 0 || Head.Y < 0 ||
-				Head.X >= form.MaxWidth || Head.Y >= form.MaxHeight) {
+			Collisions();
+		}
+
+		private void Collisions() {
+			BorderCollision();
+			SerpentCollision();
+			TileCollision();
+			// Pomme collision
+			/*
+			if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
+				Eat();
+				form.GeneratePomme();
+			}
+			*/
+		}
+
+		private void TileCollision() {
+			Position position = new Position(Head.X, Head.Y);
+			if (form.TouchedTiles.Tiles.ContainsKey(position)) {
 				Alive = false;
 				form.Die();
 			}
-			// Serpents collision
+		}
+
+		private void SerpentCollision() {
 			if (Index == 0) {
 				Serpent secondPlayer = form.Players[1];
 				if (Head.X == secondPlayer.Head.X &&
@@ -90,19 +108,14 @@ namespace Serpent {
 					form.Die();
 				}
 			}
-			// Tiles collision
-			Position position = new Position(Head.X, Head.Y);
-			if (form.TouchedTiles.Tiles.ContainsKey(position)) {
+		}
+
+		private void BorderCollision() {
+			if (Head.X < 0 || Head.Y < 0 ||
+							Head.X >= form.MaxWidth || Head.Y >= form.MaxHeight) {
 				Alive = false;
 				form.Die();
 			}
-			// Pomme collision
-			/*
-			if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
-				Eat();
-				form.GeneratePomme();
-			}
-			*/
 		}
 	}
 }
