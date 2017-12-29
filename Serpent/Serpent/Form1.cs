@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,6 +13,7 @@ namespace Serpent
 		private Serpent[] players;
 		// private Pomme pomme;
 		private TouchedTiles touchedTiles;
+		private List<Bonus> bonuss;
 		private String winner;
 
 		public int MaxWidth { get => maxWidth; set => maxWidth = value; }
@@ -21,6 +23,7 @@ namespace Serpent
 		internal Serpent[] Players { get => players; set => players = value; }
 		// internal Pomme Pomme { get => pomme; set => pomme = value; }
 		internal TouchedTiles TouchedTiles { get => touchedTiles; set => touchedTiles = value; }
+		internal List<Bonus> Bonuss { get => bonuss; set => bonuss = value; }
 
 		public Form1() {
 			InitializeComponent();
@@ -52,6 +55,8 @@ namespace Serpent
 			Players[0] = FirstPlayer;
 			Players[1] = SecondPlayer;
 
+			Bonuss = new List<Bonus>();
+
 			TouchedTiles = new TouchedTiles();
 
 			winner = "";
@@ -68,6 +73,42 @@ namespace Serpent
 		}
 		*/
 
+		private void GenerateBonus() {
+			Random random = new Random();
+			bool generate = random.Next(1, 101) >= 99;
+
+			if (generate) {
+				Array listBonus = Enum.GetValues(typeof(EnumBonus));
+				EnumBonus enumBonus = (EnumBonus) listBonus.GetValue(random.Next(listBonus.Length));
+
+				Bonus bonus;
+				int randomX = random.Next(0, MaxWidth);
+				int randomY = random.Next(0, MaxHeight);
+				bool forEnemy = random.Next(0, 2) == 1;
+				switch (enumBonus) {
+					case EnumBonus.Inverse:
+						bonus = new Inverse(randomX, randomY, forEnemy); 
+						break;
+					case EnumBonus.Invincibility:
+						bonus = new Invincibility(randomX, randomY, forEnemy);
+						break;
+					case EnumBonus.SpeedUp:
+						bonus = new SpeedUp(randomX, randomY, forEnemy);
+						break;
+					case EnumBonus.SpeedDown:
+						bonus = new SpeedDown(randomX, randomY, forEnemy);
+						break;
+					case EnumBonus.Pomme:
+						bonus = new Pomme(randomX, randomY, forEnemy);
+						break;
+					default:
+						bonus = new Inverse(randomX, randomY, forEnemy);
+						break;
+				}
+
+				Bonuss.Add(bonus);
+			}
+		}
 
 		private void Update(object sender, EventArgs e) {
 			if (!Parametres.GameStarted || Parametres.GamePaused || Parametres.GameOver) {
@@ -79,13 +120,14 @@ namespace Serpent
 					Parametres.GamePaused = false;
 				}
 			} else if (Parametres.GameStarted && !Parametres.GamePaused && !Parametres.GameOver) {
-				
 				if (Input.KeyPressed(Keys.Space)) {
 					Parametres.GamePaused = true;
 				}
 
+				GenerateBonus();
 
 				// Update first player
+				FirstPlayer.UpdateActiveBonus();
 				Direction firstPlayerDirection = FirstPlayer.Direction;
 				if (Input.KeyPressed(Keys.Right) && firstPlayerDirection != Direction.Left) {
 					firstPlayerDirection = Direction.Right;
@@ -99,6 +141,7 @@ namespace Serpent
 				FirstPlayer.Move(firstPlayerDirection);
 
 				// Update second player
+				SecondPlayer.UpdateActiveBonus();
 				Direction secondPlayerDirection = SecondPlayer.Direction;
 				if (Input.KeyPressed(Keys.D) && secondPlayerDirection != Direction.Left) {
 					secondPlayerDirection = Direction.Right;
@@ -125,16 +168,8 @@ namespace Serpent
 			if (Parametres.GameStarted && !Parametres.GamePaused && !Parametres.GameOver) {
 				label1.Visible = false;
 
-				// Draw players
-				for (int i = 0; i < Players.Length; ++i) {
-					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
-				}
-
 				// Draw pomme
 				// pomme.Draw(canvas, Parametres.Width, Parametres.Height);
-
-				// Draw touched tiles
-				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
 
 				// Draw grid
 				int numOfCells = (pictureBox.Width * pictureBox.Height) / (Parametres.Width * Parametres.Height);
@@ -143,6 +178,19 @@ namespace Serpent
 				for (int i = 0; i < numOfCells; ++i) {
 					canvas.DrawLine(pen, 0, i * cellSize, numOfCells * cellSize, i * cellSize);
 					canvas.DrawLine(pen, i * cellSize, 0, i * cellSize, numOfCells * cellSize);
+				}
+
+				// Draw touched tiles
+				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
+
+				// Draw players
+				for (int i = 0; i < Players.Length; ++i) {
+					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
+				}
+
+				// Draw bonuss
+				foreach (Bonus bonus in Bonuss) {
+					bonus.Draw(canvas, Parametres.Width, Parametres.Height);
 				}
 			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
 				String endText = "Press Enter to play.\nWASD for Blue Player\nArrow keys for Green Player";
