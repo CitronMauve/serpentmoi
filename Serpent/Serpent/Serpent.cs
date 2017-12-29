@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace Serpent {
 	class Serpent {
@@ -65,6 +66,7 @@ namespace Serpent {
 			BorderCollision();
 			SerpentCollision();
 			TileCollision();
+			BonusCollision();
 			// Pomme collision
 			/*
 			if (Body[0].X == form.Pomme.X && Body[0].Y == form.Pomme.Y) {
@@ -72,6 +74,17 @@ namespace Serpent {
 				form.GeneratePomme();
 			}
 			*/
+		}
+		
+		private void BonusCollision() {
+			if (form.Bonuss.Count != 0) {
+				for (int i = 0; i < form.Bonuss.Count; ++i) {
+					if (Head.X == form.Bonuss[i].X && Head.Y == form.Bonuss[i].Y) {
+						form.Bonuss.RemoveAt(i);
+						break;
+					}
+				}
+			}
 		}
 
 		private void TileCollision() {
