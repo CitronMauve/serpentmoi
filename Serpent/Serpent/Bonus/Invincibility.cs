@@ -9,6 +9,7 @@ namespace Serpent {
 
 		public Invincibility(int X, int Y, bool ForEnemy) {
 			Color = Brushes.DarkOrange;
+			Name = "Invincibility";
 			this.X = X;
 			this.Y = Y;
 			this.ForEnemy = ForEnemy;

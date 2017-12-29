@@ -126,7 +126,6 @@ namespace Serpent
 
 				GenerateBonus();
 
-
 				// Update first player
 				FirstPlayer.UpdateActiveBonus();
 				Direction firstPlayerDirection = FirstPlayer.Direction;
@@ -169,21 +168,8 @@ namespace Serpent
 			if (Parametres.GameStarted && !Parametres.GamePaused && !Parametres.GameOver) {
 				label1.Visible = false;
 
-				// Draw players
-				for (int i = 0; i < Players.Length; ++i) {
-					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
-				}
-
 				// Draw pomme
 				// pomme.Draw(canvas, Parametres.Width, Parametres.Height);
-
-				// Draw touched tiles
-				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
-
-				// Draw bonuss
-				foreach (Bonus bonus in Bonuss) {
-					bonus.Draw(canvas, Parametres.Width, Parametres.Height);
-				}
 
 				// Draw grid
 				int numOfCells = (pictureBox.Width * pictureBox.Height) / (Parametres.Width * Parametres.Height);
@@ -192,6 +178,19 @@ namespace Serpent
 				for (int i = 0; i < numOfCells; ++i) {
 					canvas.DrawLine(pen, 0, i * cellSize, numOfCells * cellSize, i * cellSize);
 					canvas.DrawLine(pen, i * cellSize, 0, i * cellSize, numOfCells * cellSize);
+				}
+
+				// Draw touched tiles
+				TouchedTiles.Draw(canvas, Parametres.Width, Parametres.Height);
+
+				// Draw players
+				for (int i = 0; i < Players.Length; ++i) {
+					Players[i].Draw(canvas, Parametres.Width, Parametres.Height);
+				}
+
+				// Draw bonuss
+				foreach (Bonus bonus in Bonuss) {
+					bonus.Draw(canvas, Parametres.Width, Parametres.Height);
 				}
 			} else if (!Parametres.GameStarted && !Parametres.GameOver) {
 				String endText = "Press Enter to play.\nWASD for Blue Player\nArrow keys for Green Player";

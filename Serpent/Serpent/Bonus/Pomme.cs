@@ -10,6 +10,7 @@ namespace Serpent {
 
 		public Pomme(int X, int Y, bool ForEnemy) {
 			Color = Brushes.Red;
+			Name = "Pomme";
 			this.X = X;
 			this.Y = Y;
 			this.ForEnemy = ForEnemy;

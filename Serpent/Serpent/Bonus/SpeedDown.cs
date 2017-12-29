@@ -9,6 +9,7 @@ namespace Serpent {
 
 		public SpeedDown(int X, int Y, bool ForEnemy) {
 			Color = Brushes.DarkCyan;
+			Name = "Speed Down";
 			this.X = X;
 			this.Y = Y;
 			this.ForEnemy = ForEnemy;

@@ -9,6 +9,7 @@ namespace Serpent {
 
 		public Inverse(int X, int Y, bool ForEnemy) {
 			Color = Brushes.DarkMagenta;
+			Name = "Inverse";
 			this.X = X;
 			this.Y = Y;
 			this.ForEnemy = ForEnemy;

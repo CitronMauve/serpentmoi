@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Serpent {
 	class Serpent {
@@ -10,7 +12,8 @@ namespace Serpent {
 		private Brush color;
 		private int index;
 		private bool alive;
-		private HashSet<Bonus> activeBonus;
+		// private HashSet<Bonus> activeBonus;
+		private Dictionary<string, int> activeBonus;
 
 		internal Position Head { get => head; set => head = value; }
 		public Direction Direction { get => direction; set => direction = value; }
@@ -18,6 +21,9 @@ namespace Serpent {
 		public Brush Color { get => color; set => color = value; }
 		public int Index { get => index; set => index = value; }
 		public bool Alive { get => alive; set => alive = value; }
+		internal Dictionary<string, int> ActiveBonus { get => activeBonus; set => activeBonus = value; }
+
+		// internal HashSet<Bonus> ActiveBonus { get => activeBonus; set => activeBonus = value; }
 
 		public Serpent(Form1 form, Brush color, Position position) {
 			this.form = form;
@@ -26,7 +32,15 @@ namespace Serpent {
 			Direction = Direction.Down;
 			Color = color;
 			Alive = true;
-			activeBonus = new HashSet<Bonus>();
+			// ActiveBonus = new HashSet<Bonus>();
+			InitializeActiveBonus();
+		}
+
+		private void InitializeActiveBonus() {
+			ActiveBonus = new Dictionary<string, int>();
+			foreach (EnumBonus bonus in Enum.GetValues(typeof(EnumBonus))) {
+				ActiveBonus.Add(bonus.ToString(), 0);
+			}
 		}
 
 		public void Draw(Graphics canvas, int scaleWidth, int scaleHeight) {
@@ -45,53 +59,48 @@ namespace Serpent {
 		*/
 
 		public void Move(Direction direction) {
-			bool inversePresent = false;
-			bool invincibilityPresent = false;
-			foreach (Bonus bonus in activeBonus) {
-				if (bonus is Inverse) {
-					inversePresent = true;
-				} else if (bonus is Invincibility) {
-					invincibilityPresent = true;
-				}
-			}
-			if (inversePresent) {
-				switch (direction) {
-					case Direction.Right:
-						Head.X--;
-						break;
-					case Direction.Left:
-						Head.X++;
-						break;
-					case Direction.Up:
-						Head.Y++;
-						break;
-					case Direction.Down:
-						Head.Y--;
-						break;
-				}
+			if (ActiveBonus["Inverse"] > 0) {
+				InverseDirection(direction);
 			} else {
-				switch (direction) {
-					case Direction.Right:
-						Head.X++;
-						break;
-					case Direction.Left:
-						Head.X--;
-						break;
-					case Direction.Up:
-						Head.Y--;
-						break;
-					case Direction.Down:
-						Head.Y++;
-						break;
-				}
+				Direction = direction;
 			}
-			Direction = direction;
+			switch (Direction) {
+				case Direction.Right:
+					Head.X++;
+					break;
+				case Direction.Left:
+					Head.X--;
+					break;
+				case Direction.Up:
+					Head.Y--;
+					break;
+				case Direction.Down:
+					Head.Y++;
+					break;
+			}
 
-			Collisions(invincibilityPresent);
+			Collisions();
 		}
 
-		private void Collisions(bool invincibility) {
-			if (invincibility) {
+		private void InverseDirection(Direction direction) {
+			switch (direction) {
+				case Direction.Right:
+					Direction = Direction.Left;
+					break;
+				case Direction.Left:
+					Direction = Direction.Right;
+					break;
+				case Direction.Up:
+					Direction = Direction.Down;
+					break;
+				case Direction.Down:
+					Direction = Direction.Up;
+					break;
+			}
+		}
+
+		private void Collisions() {
+			if (ActiveBonus["Invincibility"] > 0) {
 				BonusCollision();
 			} else {
 				BorderCollision();
@@ -122,38 +131,16 @@ namespace Serpent {
 		}
 
 		private void AddBonus(Bonus bonus) {
-			bool present = false;
-
-			foreach (Bonus b in activeBonus) {
-				if (b.GetType() == bonus.GetType()) {
-					b.RemainingDuration = b.MaxDuration;
-					present = true;
-				}
-			}
-
-			if (!present) {
-				activeBonus.Add(bonus);
-			}
-		}
-
-		private void RemoveBonus() {
-			List<Bonus> bonusToRemove = new List<Bonus>();
-			foreach (Bonus bonus in activeBonus) {
-				if (bonus.RemainingDuration <= 0) {
-					bonusToRemove.Add(bonus);
-				}
-			}
-			foreach (Bonus bonus in bonusToRemove) {
-				activeBonus.Remove(bonus);
-			}
+			ActiveBonus[bonus.Name] = bonus.MaxDuration;
 		}
 
 		public void UpdateActiveBonus() {
-			foreach (Bonus bonus in activeBonus) {
-				bonus.RemainingDuration = bonus.RemainingDuration - 1;
+			foreach (string key in ActiveBonus.Keys.ToList()) {
+				if (ActiveBonus[key] > 0) {
+					ActiveBonus[key] = ActiveBonus[key] - 1;
+					Console.WriteLine(Color + " bonus " + key + ": " + ActiveBonus[key]);
+				}
 			}
-
-			RemoveBonus();
 		}
 
 		private void TileCollision() {
