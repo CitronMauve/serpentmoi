@@ -136,7 +136,7 @@ namespace Serpent {
 			}
 		}
 
-		public void RemoveBonus() {
+		private void RemoveBonus() {
 			List<Bonus> bonusToRemove = new List<Bonus>();
 			foreach (Bonus bonus in activeBonus) {
 				if (bonus.RemainingDuration <= 0) {
@@ -146,6 +146,14 @@ namespace Serpent {
 			foreach (Bonus bonus in bonusToRemove) {
 				activeBonus.Remove(bonus);
 			}
+		}
+
+		public void UpdateActiveBonus() {
+			foreach (Bonus bonus in activeBonus) {
+				bonus.RemainingDuration = bonus.RemainingDuration - 1;
+			}
+
+			RemoveBonus();
 		}
 
 		private void TileCollision() {

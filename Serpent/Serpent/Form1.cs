@@ -126,7 +126,9 @@ namespace Serpent
 
 				GenerateBonus();
 
+
 				// Update first player
+				FirstPlayer.UpdateActiveBonus();
 				Direction firstPlayerDirection = FirstPlayer.Direction;
 				if (Input.KeyPressed(Keys.Right) && firstPlayerDirection != Direction.Left) {
 					firstPlayerDirection = Direction.Right;
@@ -140,6 +142,7 @@ namespace Serpent
 				FirstPlayer.Move(firstPlayerDirection);
 
 				// Update second player
+				SecondPlayer.UpdateActiveBonus();
 				Direction secondPlayerDirection = SecondPlayer.Direction;
 				if (Input.KeyPressed(Keys.D) && secondPlayerDirection != Direction.Left) {
 					secondPlayerDirection = Direction.Right;
