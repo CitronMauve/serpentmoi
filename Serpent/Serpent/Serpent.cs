@@ -17,15 +17,6 @@ namespace Serpent {
 		public int Index { get => index; set => index = value; }
 		public bool Alive { get => alive; set => alive = value; }
 
-		public Serpent(Form1 form, Brush color) {
-			this.form = form;
-			Head = new Position(10, 5);
-			// Body.Add(head);
-			Direction = Direction.Down;
-			Color = color;
-			Alive = true;
-		}
-
 		public Serpent(Form1 form, Brush color, Position position) {
 			this.form = form;
 			Head = position;
