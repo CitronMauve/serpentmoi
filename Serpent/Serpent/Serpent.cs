@@ -22,7 +22,6 @@ namespace Serpent {
 		public int Index { get => index; set => index = value; }
 		public bool Alive { get => alive; set => alive = value; }
 		internal Dictionary<string, int> ActiveBonus { get => activeBonus; set => activeBonus = value; }
-
 		// internal HashSet<Bonus> ActiveBonus { get => activeBonus; set => activeBonus = value; }
 
 		public Serpent(Form1 form, Brush color, Position position) {
@@ -59,7 +58,7 @@ namespace Serpent {
 		*/
 
 		public void Move(Direction direction) {
-			if (ActiveBonus["Inverse"] > 0) {
+			if (IsInversed()) {
 				InverseDirection(direction);
 			} else {
 				Direction = direction;
@@ -100,20 +99,19 @@ namespace Serpent {
 		}
 
 		private void Collisions() {
-			if (ActiveBonus["Invincibility"] > 0) {
-				BonusCollision();
-			} else {
-				BorderCollision();
+			if (!IsInvincible()) {
 				SerpentCollision();
 				TileCollision();
-				BonusCollision();
 			}
+			BorderCollision();
+			BonusCollision();
 		}
 		
 		private void BonusCollision() {
 			if (form.Bonuss.Count != 0) {
 				for (int i = 0; i < form.Bonuss.Count; ++i) {
 					if (Head.X == form.Bonuss[i].X && Head.Y == form.Bonuss[i].Y) {
+						/*
 						if (form.Bonuss[i].ForEnemy) {
 							if (Index == 0) {
 								form.Players[1].AddBonus(form.Bonuss[i]);
@@ -123,6 +121,8 @@ namespace Serpent {
 						} else {
 							AddBonus(form.Bonuss[i]);
 						}
+						*/
+						AddBonus(form.Bonuss[i]);
 						form.Bonuss.RemoveAt(i);
 						break;
 					}
@@ -138,7 +138,7 @@ namespace Serpent {
 			foreach (string key in ActiveBonus.Keys.ToList()) {
 				if (ActiveBonus[key] > 0) {
 					ActiveBonus[key] = ActiveBonus[key] - 1;
-					Console.WriteLine(Color + " bonus " + key + ": " + ActiveBonus[key]);
+					Console.WriteLine(Index + " bonus " + key + ": " + ActiveBonus[key]);
 				}
 			}
 		}
@@ -172,10 +172,32 @@ namespace Serpent {
 
 		private void BorderCollision() {
 			if (Head.X < 0 || Head.Y < 0 ||
-							Head.X >= form.MaxWidth || Head.Y >= form.MaxHeight) {
-				Alive = false;
-				form.Die();
+							Head.X > form.MaxWidth || Head.Y > form.MaxHeight) {
+				if (IsInvincible()) {
+					if (Head.X < 0) {
+						Head.X = form.MaxWidth;
+					} else if (Head.X > form.MaxWidth) {
+						Head.X = 0;
+					}
+
+					if (Head.Y < 0) {
+						Head.Y = form.MaxHeight;
+					} else if (Head.Y > form.MaxHeight) {
+						Head.Y = 0;
+					}
+				} else {
+					Alive = false;
+					form.Die();
+				}
 			}
+		}
+
+		private bool IsInvincible() {
+			return ActiveBonus["Invincibility"] > 0;
+		}
+
+		private bool IsInversed() {
+			return ActiveBonus["Inverse"] > 0;
 		}
 	}
 }

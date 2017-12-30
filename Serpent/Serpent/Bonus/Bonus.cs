@@ -5,8 +5,8 @@ namespace Serpent {
 		private Brush color;
 		private int x;
 		private int y;
-		private int remainingDuration = 100;
-		private int maxDuration = 100;
+		private int remainingDuration = 200;
+		private int maxDuration = 200;
 		private bool forEnemy;
 		private string name;
 
