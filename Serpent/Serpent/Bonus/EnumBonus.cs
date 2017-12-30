@@ -4,6 +4,7 @@
 		Invincibility,
 		SpeedUp,
 		SpeedDown,
+		Clear,
 		Pomme
 	}
 }

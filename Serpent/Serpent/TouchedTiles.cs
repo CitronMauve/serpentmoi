@@ -24,5 +24,9 @@ namespace Serpent {
 				Tiles.Add(newPosition, color);
 			}
 		}
+
+		public void ClearTiles() {
+			Tiles.Clear();
+		}
 	}
 }

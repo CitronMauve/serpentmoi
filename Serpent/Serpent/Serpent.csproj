@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Bonus\Bonus.cs" />
     <Compile Include="Bonus\EnumBonus.cs" />
+    <Compile Include="Bonus\Clear.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -122,7 +122,12 @@ namespace Serpent {
 							AddBonus(form.Bonuss[i]);
 						}
 						*/
-						AddBonus(form.Bonuss[i]);
+
+						if (form.Bonuss[i] is Clear) {
+							form.TouchedTiles.ClearTiles();
+						} else {
+							AddBonus(form.Bonuss[i]);
+						}
 						form.Bonuss.RemoveAt(i);
 						break;
 					}

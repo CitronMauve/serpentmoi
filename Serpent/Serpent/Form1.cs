@@ -98,6 +98,9 @@ namespace Serpent
 					case EnumBonus.SpeedDown:
 						bonus = new SpeedDown(randomX, randomY, forEnemy);
 						break;
+					case EnumBonus.Clear:
+						bonus = new Clear(randomX, randomY, forEnemy);
+						break;
 					case EnumBonus.Pomme:
 						bonus = new Pomme(randomX, randomY, forEnemy);
 						break;
