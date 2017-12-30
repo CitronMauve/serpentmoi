@@ -1,18 +1,91 @@
-\documentclass[12pt]{article}
-\usepackage[french]{babel}
+\documentclass[12pt, french, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{babel}
 
-\title{IN4I16 - Projet Snake en C#}
-
-\author{
-  GILLE Romain\\
-  \texttt{romain.gille@edu.esiee.fr}
-  \and
-  NGUYEN Huy-Hai Vincent\\
-  \texttt{huy-haivincent.nguyen@edu.esiee.fr}
+\title{
+  \textbf{IN4I16 - Génie Logiciel\\
+  Projet Snake en C\#}
 }
-
+\author{
+  GILLE Romain \\
+  \href{mailto:romain.gille@edu.esiee.fr}{romain.gille@edu.esiee.fr}
+  \and
+  NGUYEN Huy-Hai Vincent \\
+  \href{mailto:huy-haivincent.nguyen@edu.esiee.fr}{huy-haivincent.nguyen@edu.esiee.fr}
+}
 \date{\today}
 
 \begin{document}
   \maketitle
+  \pagenumbering{gobble}
+  \newpage
+
+  \pagenumbering{arabic}
+
+  \tableofcontents
+  \newpage
+
+  \section{Description}
+    Dans le cadre de l'unité \textbf{IN4I16 - Génie Logiciel}, un projet est demandé à la fin de l'unité en langage C\#. Pour ce projet, nous avons choisi de développer un jeu \href{https://fr.wikipedia.org/wiki/Snake_(jeu_vid%C3%A9o)}{\underline{Snake}} jouable à deux.
+    \newline
+    Le but de notre Snake, contrairement au jeu original où le but est d'avoir le plus haut score possible. Nous avons décidé de faire jouer les deux joueurs l'un contre l'autre, à l'image des jeux en ligne \href{http://slither.io/}{\underline{Slither}} et \href{http://curvefever.io/}{\underline{Curve Fever}}.
+
+  \section{Objectif}
+  Le but était dans un premier temps de développer le jeu Snake classique, créer un programme où un joueur contrôle le serpent et essaie de survivre le plus longtemps possible tout en amassant un maximum de points. Chaque point augmentant la taille du serpent et donc la difficulté.
+
+  \vspace{5mm}
+
+  Après cette première base, nous avions fixé comme objectif d'implémenter la fonctionnalité de Versus, en ajoutant la possibilité à un deuxième joueur de contrôler un autre serpent en jeu.
+
+  \vspace{5mm}
+
+  Enfin nous avions prévu dans le cahier des charges une liste d'objets influant le cours de la partie:
+  \begin{itemize}
+    \item \textit{Le changement de sens} : cet objet inverse les touches de déplacement
+    \item \textit{L'invincibilité} : cet objet rend invicible le joueur et lui permet de traverser les traces
+    \item \textit{L'accélération} : cet objet double la vitesse du serpent
+    \item \textit{Le ralentissement} : cet objet divise par deux la vitesse du serpent
+    \item \textit{L'effacement} : cet objet efface toutes les traces
+  \end{itemize}
+
+  \vspace{5mm}
+  Chacun de ces objets pouvant soit avoir un effet sur le joueur récupérant celui-ci, soit sur le joueur adverse. La cible des objets est définie en fonction du contour de l'objet.
+  \newline
+  Un objet \textit{Changement de sens} avec un contour \textbf{vert}, agira sur celui qui a pris le bonus, alors qu'avec un contour \textbf{rouge}, c'est le joueur adverse qui profitera du bonus, ici le \textit{Changement de sens}.
+
+  \section{Tâches réalisées}
+  \subsection{Déplacements}
+  Les déplacements du serpent sont les mêmes que celles du jeu Snake classique. Le joueur peut se déplacer vers le haut avec la touche \textbf{W}, vers la droite avec \textbf{D}, vers le bas avec \textbf{S}, et vers la gauche avec \textbf{A}.
+  \newline
+  Ces touches ont été choisies pour l'utilisation d'un clavier QWERTY Améri-cain.
+
+  \subsection{Multijoueurs}
+  Nous avons ajouté un deuxième serpent d'une couleur différente afin de pouvoir identifier les deux joueurs. Afin de contrôler le deuxième serpent, nous avons choisi d'utiliser les \textbf{flèches directionnelles} du clavier.
+
+  \subsection{Queue et trace/obstacle}
+  Le système de queue d'un serpent pour le remplacer par une marque de passage permanente sur l'écran de jeu. Ce marquage sert, comme pour Curve Fever, d'obstacle pour les deux joueurs, rendant la survie de plus en plus difficile au fur et à mesure que la partie dure.
+
+  \subsection{Objet Pomme et Score}
+  Avec l'arrivée de cette fonctionnalité, nous avons également retiré du jeu l'objet Pomme, permettant d'agrandir la taille d'un serpent, ainsi que le système de score.
+
+  \subsection{Objets implémentés}
+  Les objets apparaissent de façon aléatoire sur la carte du jeu et ne sont \textbf{pas} uniques. Cela veut dire qu'il peut très bien avoir par exemple trois objets \textit{Changement de sens} en même temps en jeu. La probabilité qu'un objet apparaisse en jeu est de \textbf{1\%}. Tous les objets ont une chance \textbf{équiprobable} d'apparition.
+  \newline
+  Chaque objet a une couleur différente afin de les differencier les uns des autres.
+
+  \subsubsection{Le changement de sens}
+  Lorsque cet objet de couleur \textbf{Violet} est pris, le joueur aura ses déplacements inversés: la gauche devient la droite, la droite devient la gauche, le haut devient le bas et le bas devient le haut.
+
+  \subsubsection{L'invincibilité}
+  L'invincibilité est un rond \textbf{Orange} et rend le joueur invincible. Cette invincibilité est caractérisée par la possibilité de traverser \textbf{sans} mourir les traces. Il permet également de passer d'un bord de la carte à l'autre.
+  \newline
+  En allant à la limite gauche de la carte, le joueur apparaîtra à droite. À la limite droite, il passera à gauche, de même pour les bordures haute et basse.
+
+  \subsubsection{L'effacement}
+  Cet objet \textbf{Noir} permet de réinitialiser toutes les traces laissées jusqu'à présent.
+
+  \subsection{Fonctionnalité Pause}
+  Nous avons ajouté la fonctionnalité de Pause accessible via la touche Espace.
+
 \end{document}
